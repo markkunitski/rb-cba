@@ -21,6 +21,16 @@
 .btn.mybluebtn:hover {
   background-color: #009CFF;
 }
+.btn.myredbtn {
+  background-color: rgb(185, 32, 47);
+  color: #fff;
+}
+.btn.myredbtn:hover {
+  background-color: rgb(255, 0, 25);
+}
+a {
+  transition: .15s ease;
+}
 a.link {
   text-decoration: none;
 }
@@ -34,4 +44,25 @@ a.link:hover {
 a.link-active:hover {
   text-decoration: underline;
   color: rgb(0, 25, 41);
+}
+.main-content {
+  margin-top: 3.5rem;
+  width: 75%;
+  margin-inline: auto;
+}
+.add-link {
+  transition: .15s ease;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #71717A;
+}
+.add-link:hover {
+  text-decoration: underline;
+  color: #434348;
+}
+h2 {
+  font-size: 22px;
+}
+.modal-box {
+  border-radius: 0;
 }
