@@ -11,6 +11,7 @@
   border-radius: 0;
 }
 .btn{
+  text-transform: capitalize;
   border-radius: 0;
   font-weight: 400;
 }
@@ -27,6 +28,9 @@
 }
 .btn.myredbtn:hover {
   background-color: rgb(255, 0, 25);
+}
+.btn:disabled {
+  opacity: .5;
 }
 a {
   transition: .15s ease;

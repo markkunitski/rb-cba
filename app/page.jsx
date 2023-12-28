@@ -23,7 +23,7 @@ export default function Home() {
         break;
       case 2:
         role = "3";
-        link = "/admin-documents";
+        link = "/no-rights";
         break;
     }
     const token = Math.random().toString(36).substring(7);
