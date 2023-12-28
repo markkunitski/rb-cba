@@ -47,8 +47,12 @@ a.link-active:hover {
 }
 .main-content {
   margin-top: 3.5rem;
-  width: 75%;
-  margin-inline: auto;
+  width: 79%;
+  margin-left: 320px;
+}
+.main-content.my-table {
+  width: 83%;
+  margin-left: 280px;
 }
 .add-link {
   transition: .15s ease;
@@ -65,4 +69,9 @@ h2 {
 }
 .modal-box {
   border-radius: 0;
+  overflow: visible;
+}
+.checkbox.checked {
+  padding: 20px;
+  background-color: #009CFF;
 }
