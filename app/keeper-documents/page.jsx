@@ -37,19 +37,16 @@ const Page = () => {
   ]);
   const [requested, setRequested] = useState([
     {
-      name: "Cool Document One",
+      name: "Cool REQUEST One",
       type: ".cvs",
-      updated: "21.02.2024",
     },
     {
-      name: "Awesome Document Second",
+      name: "Awesome REQUEST Second",
       type: ".docx",
-      updated: "10.02.2023",
     },
     {
-      name: "Unbelivable Document Third",
+      name: "Unbelivable REQUEST Third",
       type: ".exe",
-      updated: "11.11.2021",
     },
   ]);
   const { role, token } = useContext(AuthContext);
@@ -74,11 +71,18 @@ const Page = () => {
     }
   };
   const deleteBank = (indexToRemove) => {
-    setIsModalOpen(false);
     setData([
       ...data.slice(0, indexToRemove),
       ...data.slice(indexToRemove + 1),
     ]);
+    closeModal();
+  };
+  const deleteRequest = (indexToRemove) => {
+    setRequested([
+      ...requested.slice(0, indexToRemove),
+      ...requested.slice(indexToRemove + 1),
+    ]);
+    closeModal();
   };
   const addDoc = async (event) => {
     event.preventDefault();
@@ -87,50 +91,52 @@ const Page = () => {
     const fileInput = event.target.elements[0];
     const file = fileInput.files[0];
 
-    // Don't proceed if the file input is empty
     if (!file) {
       return;
     }
+    setData([
+      ...data,
+      {
+        name: file.name,
+        type: file.type,
+        updated: file.lastModifiedDate.toLocaleDateString("en-GB"),
+      },
+    ]);
 
-    // Create a FormData object and append the file to it
-    const formData = new FormData();
-    formData.append("document_data", file);
+    // const formData = new FormData();
+    // formData.append("document_data", file);
+    // const jsonData = {
+    //   customer_id: role,
+    //   token: token,
+    // };
 
-    // Create the JSON data separately
-    const jsonData = {
-      customer_id: role,
-      token: token,
-    };
+    // // Append the JSON data as a blob to the FormData
+    // formData.append(
+    //   "json_data",
+    //   new Blob([JSON.stringify(jsonData)], { type: "application/json" })
+    // );
 
-    // Append the JSON data as a blob to the FormData
-    formData.append(
-      "json_data",
-      new Blob([JSON.stringify(jsonData)], { type: "application/json" })
-    );
+    // try {
+    //   const response = await fetch(CREATE_DOC, {
+    //     method: "POST",
+    //     body: formData,
+    //   });
 
-    // Make the POST request using the FormData object
-    try {
-      const response = await fetch(CREATE_DOC, {
-        method: "POST",
-        body: formData,
-      });
-
-      // Handle the response here
-      if (response.ok) {
-        const data = await response.json();
-        // Do something with the data
-        console.log(data);
-      } else {
-        throw new Error("Failed to create doc");
-      }
-    } catch (error) {
-      // Handle the error here
-      console.error(error);
-    }
+    //   // Handle the response here
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     // Do something with the data
+    //     console.log(data);
+    //   } else {
+    //     throw new Error("Failed to create doc");
+    //   }
+    // } catch (error) {
+    //   // Handle the error here
+    //   console.error(error);
+    // }
 
     closeModal();
   };
-
   const addAccount = (event, index) => {
     event.preventDefault();
 
@@ -154,12 +160,23 @@ const Page = () => {
     setIsModalOpen(false); // Close the dialog
     setModalKey(modalKey + 1);
   };
+  const addRequest = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const newBank = {};
+    formData.forEach((value, key) => {
+      newBank[key] = value;
+    });
+    setRequested([...requested, newBank]);
+
+    event.currentTarget.reset(); // Reset the form fields
+    closeModal();
+  };
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
   }, []);
-
   return (
     <main className="flex">
       <Aside role={role}>
@@ -342,25 +359,71 @@ const Page = () => {
                 <h2 className="me-10">Requested</h2>
 
                 <span
-                  onClick={(event) => openModal(event, "add")}
+                  onClick={(event) => openModal(event, "createRequest")}
                   className="add-link"
                 >
                   Add new
                 </span>
 
-                <dialog key={modalKey} id={`modal_add`} className="modal">
+                <dialog
+                  key={modalKey}
+                  id={`modal_createRequest`}
+                  className="modal"
+                >
                   <div className="modal-box w-11/12 max-w-5xl">
                     <form
-                      onSubmit={addDoc}
+                      onSubmit={addRequest}
                       method="dialog"
-                      className="flex justify-between"
+                      className="flex items-end"
                     >
-                      <input
-                        type="file"
-                        className="file-input file-input-bordered rounded-none w-5/6"
-                      />
+                      <label className="form-control w-full me-4">
+                        <div className="label">
+                          <span className="label-text capitalize">name</span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="name"
+                          name="name"
+                          className="input myinput w-full "
+                        />
+                      </label>
+                      <label className="form-control w-full me-4">
+                        <div className="label">
+                          <span className="label-text capitalize">type</span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="type"
+                          name="type"
+                          className="input myinput w-full "
+                        />
+                      </label>
+                      {/* <label className="form-control w-full me-4">
+                        <div className="label">
+                          <span className="label-text capitalize">
+                            requestor
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="requestor"
+                          name="requestor"
+                          className="input myinput w-full "
+                        />
+                      </label>
+                      <label className="form-control w-full me-4">
+                        <div className="label">
+                          <span className="label-text capitalize">status</span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="status"
+                          name="status"
+                          className="input myinput w-full "
+                        />
+                      </label> */}
                       <button type="submit" className="btn mybluebtn">
-                        Add Document
+                        Create
                       </button>
                     </form>
                     <button
@@ -413,12 +476,17 @@ const Page = () => {
                         <td>
                           <button
                             className="btn btn-xs myredbtn capitalize w-full"
-                            onClick={(event) => openModal(event, index)}
+                            onClick={(event) =>
+                              openModal(event, `requested${index}`)
+                            }
                           >
                             Delete
                           </button>
 
-                          <dialog id={`modal_${index}`} className="modal">
+                          <dialog
+                            id={`modal_requested${index}`}
+                            className="modal"
+                          >
                             <div className="modal-box w-11/12 max-w-5xl flex justify-between items-center">
                               <h3 className="font-bold text-lg">
                                 Are you sure you want to delete {obj.name}?
@@ -433,7 +501,7 @@ const Page = () => {
                                   Deny
                                 </button>
                                 <button
-                                  onClick={() => deleteBank(index)}
+                                  onClick={() => deleteRequest(index)}
                                   className="btn myredbtn ms-4"
                                 >
                                   Delete

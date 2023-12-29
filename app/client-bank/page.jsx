@@ -11,6 +11,8 @@ const Page = () => {
     userid: 2,
     token: "string",
   });
+  const [hardcoded, sethardcoded] = useState(null);
+
   const [expandedRow, setExpandedRow] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalKey, setModalKey] = useState(0);
@@ -26,24 +28,31 @@ const Page = () => {
   };
   const deleteBank = (indexToRemove) => {
     setIsModalOpen(false);
-    setData([
-      ...data.slice(0, indexToRemove),
-      ...data.slice(indexToRemove + 1),
-    ]);
+    sethardcoded((prevHardcoded) => ({
+      ...prevHardcoded,
+      customers: [
+        ...prevHardcoded.customers.slice(0, indexToRemove),
+        ...prevHardcoded.customers.slice(indexToRemove + 1),
+      ],
+    }));
+    closeModal();
   };
   const addBank = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const newBank = {};
     formData.forEach((value, key) => {
-      if (key === "bank_accs") {
+      if (key === "bank_accs" || key === "merit_accs") {
         newBank[key] = value.split(",").map((account) => account.trim());
       } else {
         newBank[key] = value;
       }
     });
 
-    setData([...data, newBank]);
+    sethardcoded((prevHardcoded) => ({
+      ...prevHardcoded,
+      customers: [...prevHardcoded.customers, newBank],
+    }));
 
     event.currentTarget.reset(); // Reset the form fields
     closeModal();
@@ -61,20 +70,28 @@ const Page = () => {
     });
 
     // Create a new array with the updated account
-    const newData = [...data];
+    const newData = [...hardcoded.customers];
     newData[index].bank_accs = [...newData[index].bank_accs, newAccount];
 
     // Update the state with the new data
-    setData(newData);
+    sethardcoded((prevHardcoded) => ({
+      ...prevHardcoded,
+      customers: newData,
+    }));
 
     event.currentTarget.reset(); // Reset the form fields
     closeModal();
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setModalKey(modalKey + 1);
   };
-  
+  useEffect(() => {
+    if (!loading) {
+      sethardcoded(data);
+    }
+  }, [data]);
   return (
     <main className="flex">
       <Aside role={role}>
@@ -107,80 +124,40 @@ const Page = () => {
                     method="dialog"
                     className="flex items-end"
                   >
-                    <label className="form-control w-full">
+                    <label className="form-control w-full me-4">
                       <div className="label">
-                        <span className="label-text">Bank Name</span>
+                        <span className="label-text capitalize">Bank name</span>
                       </div>
                       <input
                         type="text"
                         placeholder="Bank Name"
-                        name="bank"
+                        name="name"
                         className="input myinput w-full "
                       />
                     </label>
-                    <label className="form-control w-full">
+                    <label className="form-control w-full me-4">
                       <div className="label">
-                        <span className="label-text">Accounts</span>
+                        <span className="label-text capitalize">
+                          bank accounts
+                        </span>
                       </div>
                       <input
                         type="text"
                         placeholder="Accounts"
-                        name="accounts"
+                        name="bank_accs"
                         className="input myinput w-full "
                       />
                     </label>
-                    <label className="form-control w-full">
+                    <label className="form-control w-full me-4">
                       <div className="label">
-                        <span className="label-text">Number</span>
+                        <span className="label-text capitalize">
+                          merit accounts
+                        </span>
                       </div>
                       <input
                         type="text"
                         placeholder="Number"
-                        name="number"
-                        className="input myinput w-full "
-                      />
-                    </label>
-                    <label className="form-control w-full">
-                      <div className="label">
-                        <span className="label-text">Currency</span>
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Currency"
-                        name="currency"
-                        className="input myinput w-full "
-                      />
-                    </label>
-                    <label className="form-control w-full">
-                      <div className="label">
-                        <span className="label-text">Status</span>
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Status"
-                        name="status"
-                        className="input myinput w-full "
-                      />
-                    </label>
-                    <label className="form-control w-full">
-                      <div className="label">
-                        <span className="label-text">Expiration</span>
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Expiration"
-                        name="expiration"
-                        className="input myinput w-full "
-                      />
-                    </label>
-                    <label className="form-control w-full">
-                      <div className="label">
-                        <span className="label-text">RegId</span>
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="RegId"
-                        name="regid"
+                        name="merit_accs"
                         className="input myinput w-full "
                       />
                     </label>
@@ -221,7 +198,7 @@ const Page = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.customers.map((elem, index) => (
+                {hardcoded?.customers.map((elem, index) => (
                   <React.Fragment key={index}>
                     <tr
                       className={`hover ${
@@ -292,7 +269,7 @@ const Page = () => {
                                 method="dialog"
                                 className="flex items-end"
                               >
-                                <label className="form-control w-full">
+                                <label className="form-control w-full me-4">
                                   <div className="label">
                                     <span className="label-text">
                                       Account Name

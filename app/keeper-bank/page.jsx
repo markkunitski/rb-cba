@@ -48,8 +48,8 @@ const KeeperBank = () => {
 
           const headers = {
             "Content-Type": "application/json",
-            bankAccount: data?.Bankaccount,
-            meritAccount: data?.Meritaccount,
+            bankAccount: data?.BankAccount,
+            meritAccount: data?.MeritAccount,
             token: token,
           };
 
@@ -142,23 +142,23 @@ const KeeperBank = () => {
                 <button
                   onClick={loadDetails}
                   disabled={!selected.length ? "disabled" : undefined}
-                  className="btn mybluebtn me-6 disabled"
+                  className="btn btn-sm mybluebtn me-6 disabled"
                 >
                   Load Details
                 </button>
-                <button disabled="disabled" className="btn mybluebtn me-6  ">
+                <button disabled="disabled" className="btn mybluebtn me-6 btn-sm ">
                   Load merit
                 </button>
-                <button disabled="disabled" className="btn mybluebtn ">
+                <button disabled="disabled" className="btn mybluebtn btn-sm">
                   Yld info
                 </button>
               </div>
               <div className="divider divider-horizontal"></div>
               <div className="flex items-center">
-                <button disabled="disabled" className="btn myredbtn me-6  ">
+                <button disabled="disabled" className="btn myredbtn me-6 btn-sm ">
                   All Yld info
                 </button>
-                <button disabled="disabled" className="btn myredbtn me-6  ">
+                <button disabled="disabled" className="btn myredbtn me-6 btn-sm ">
                   Load Bank
                 </button>
               </div>

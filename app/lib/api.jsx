@@ -51,7 +51,7 @@ export const useApi = (
         };
 
         options.headers = headers;
-
+        console.log(headers);
         const res = await fetch(url, options);
         const responseData = await res.json();
         setData(responseData);
