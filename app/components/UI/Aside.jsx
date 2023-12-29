@@ -5,11 +5,11 @@ import React from "react";
 const Aside = ({ children, role }) => {
   const StringifyRole = (role) => {
     switch (role) {
-      case 1:
+      case "1":
         return "Book Keeper";
-      case 2:
+      case "2":
         return "Client";
-      case 3:
+      case "3":
         return "Admin";
     }
   };
@@ -19,7 +19,7 @@ const Aside = ({ children, role }) => {
 
       <nav className="flex flex-col">{children}</nav>
       <div>
-        <h5 className="">Hi, {role}</h5>
+        <h5 className="">Hi, {StringifyRole(role)}</h5>
         <Link className="text-zinc-500 text-sm" href={"/"}>
           Log Out
         </Link>
